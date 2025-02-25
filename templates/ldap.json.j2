@@ -1,0 +1,32 @@
+{
+	"ad.thesrv.de": {
+		"connection": {
+			"server": "app01.thesrv.de",
+			"port": "3269",
+			"user": "CN=ldapsearch,CN=Users,DC=ad,DC=thesrv,DC=de",
+			"pass": "opZVFpDyu73t",
+			"enctype": "ssl",
+			"options": {
+				"LDAP_OPT_DEREF": 1
+			},
+			"basedn": "dc=ad,dc=thesrv,dc=de",
+			"userbasedn": "CN=Users,dc=ad,dc=thesrv,dc=de",
+			"groupbasedn": "CN=Users,dc=ad,dc=thesrv,dc=de",
+			"searchattribute": "samaccountname",
+			"usernameattribute": "samaccountname",
+			"realnameattribute": "cn",
+			"emailattribute": "mail",
+			"grouprequest": "MediaWiki\\Extension\\LDAPProvider\\UserGroupsRequest\\UserMemberOf::factory",
+			"presearchusernamemodifiers": [ "spacestounderscores", "lowercase" ]
+		},
+		"userinfo": [],
+		"authorization": [],
+		"groupsync": {
+			"mapping": {
+				"engineering": "CN=MediaWiki Admins,CN=Users,DC=ad,DC=thesrv,DC=de",
+				"interface-admin": "CN=MediaWiki Admins,CN=Users,DC=ad,DC=thesrv,DC=de",
+    			"sysop": "CN=MediaWiki Admins,CN=Users,DC=ad,DC=thesrv,DC=de"
+			}
+		}
+	}
+}

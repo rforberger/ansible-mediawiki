@@ -1,0 +1,64 @@
+- name: install pkgs
+  ansible.builtin.apt:
+    name: "{{ packages }}"
+    state: present
+  vars:
+    packages:
+      - imagemagick
+
+- name: Create dirs
+  ansible.builtin.file:
+    path: "{{ item }}"
+    state: directory
+  loop:
+    - "/data/mediawiki/var/www/html/images"
+    - "/etc/mediawiki"
+    - "/etc/mediawiki/custom_extensions"
+
+#- name: Download custom extensions
+#  ansible.builtin.get_url:
+#    url: "{{ item.url }}"
+#    dest: "{{ item.dest }}"
+# loop:
+#  - { url: "https://extdist.wmflabs.org/dist/extensions/LDAPAuthorization-REL1_39-b6887c0.tar.gz", dest: "/tmp/LDAPAuthorization.tar.gz" }
+#    - { url: "https://extdist.wmflabs.org/dist/extensions/LDAPAuthentication2-REL1_39-5be3383.tar.gz", dest: "/tmp/LDAPAuthentication2.tar.gz" }
+#    - { url: "https://extdist.wmflabs.org/dist/extensions/LDAPProvider-REL1_39-11a2b22.tar.gz", dest: "/tmp/LDAPProvider.tar.gz" }
+#    - { url: "https://extdist.wmflabs.org/dist/extensions/LDAPUserInfo-REL1_39-a470354.tar.gz", dest: "/tmp/LDAPUserInfo.tar.gz" }
+#    - { url: "https://extdist.wmflabs.org/dist/extensions/LDAPGroups-REL1_39-a6bac29.tar.gz", dest: "/tmp/LDAPGroups.tar.gz" }
+#    - { url: "https://extdist.wmflabs.org/dist/extensions/PluggableAuth-REL1_39-e7de886.tar.gz", dest: "/tmp/PluggableAuth.tar.gz" }
+
+#- name: Unpack custom extensions
+#  ansible.builtin.unarchive:
+#    remote_src: yes
+#    src: "{{ item.src }}"
+#    dest: "/etc/mediawiki/custom_extensions"
+#  loop:
+#    - { src: "/tmp/LDAPAuthorization.tar.gz"  }
+#    - { src: "/tmp/LDAPAuthentication2.tar.gz" }
+#    - { src: "/tmp/LDAPProvider.tar.gz" }
+#    - { src: "/tmp/LDAPUserInfo.tar.gz" }
+#    - { src: "/tmp/LDAPGroups.tar.gz" }
+#    - { src: "/tmp/PluggableAuth.tar.gz" }
+
+- name: Write config
+  ansible.builtin.template:
+    dest: "/etc/mediawiki/LocalSettings.php"
+    src: "LocalSettings.php.j2"
+    mode: 0600
+    owner: 33
+    group: 33
+
+#- name: Write ldap config
+#  ansible.builtin.template:
+#    dest: "/etc/mediawiki/ldap.json"
+#    src: "ldap.json.j2"
+#    mode: 0600
+#    owner: 33
+#    group: 33
+
+- name: Start mediawiki
+  ansible.builtin.shell:
+    cmd: "/usr/sbin/dockerctl.py mediawiki_prod start"
+
+
+
